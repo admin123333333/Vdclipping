@@ -1,0 +1,5 @@
+results
+__pycache__
+*.bat
+README_V*.txt
+.env

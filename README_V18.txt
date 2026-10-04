@@ -1,0 +1,1 @@
+ClipForge v18: speed-focused release. Local Whisper defaults to tiny for much faster CPU transcription; CUDA is used automatically when available. English source captions skip translation. Translation batches are larger and render uses ultrafast encoding. Set CLIPFORGE_WHISPER_MODEL=base in run_clipforge.bat if you prefer higher transcription accuracy.

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>كليب فورج — استخرج أقوى لحظات فيديوهاتك</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+<meta name="description" content="كليب فورج: حوّل الفيديو الطويل إلى مقاطع قصيرة جاهزة للنشر مع ترجمة وموشن جرافيك.">
+<style>
+  body{background:#07060d;color:#ece9f7;font-family:'Tajawal',sans-serif;min-height:100vh;overflow-x:hidden}
+  .orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.55;z-index:0;pointer-events:none;animation:float 18s ease-in-out infinite}
+  .o1{width:420px;height:420px;background:#6d28d9;top:-120px;right:-80px}
+  .o2{width:380px;height:380px;background:#0891b2;bottom:-100px;left:-100px;animation-delay:-6s}
+  .o3{width:280px;height:280px;background:#db2777;top:45%;left:40%;opacity:.3;animation-delay:-11s}
+  @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(50px,-40px) scale(1.12)}66%{transform:translate(-40px,50px) scale(.94)}}
+  .glass{background:rgba(255,255,255,.05);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.1);border-radius:24px}
+  .field{width:100%;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:.8rem 1rem;color:#fff;outline:none;transition:.2s}
+  .field:focus{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(167,139,250,.25)}
+  .chip input{display:none}
+  .chip span{display:block;text-align:center;padding:.7rem 1rem;border-radius:14px;border:1px solid rgba(255,255,255,.12);cursor:pointer;transition:.2s;background:rgba(0,0,0,.25)}
+  .chip input:checked+span{background:linear-gradient(135deg,#7c3aed,#0891b2);border-color:transparent;font-weight:700}
+  .btn{background:linear-gradient(135deg,#7c3aed,#db2777);border-radius:16px;padding:.95rem 2rem;font-weight:700;font-size:1.05rem;transition:.2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px #a855f7}
+  .btn:disabled{opacity:.5;cursor:wait;transform:none}
+  .tabs button{flex:1;padding:.6rem;border-radius:12px;transition:.2s}
+  .tabs button.on{background:rgba(255,255,255,.12);font-weight:700}
+  #log{font-family:ui-monospace,monospace;direction:rtl;height:210px;overflow:auto;font-size:.88rem;line-height:1.9}
+  @media (prefers-reduced-motion:reduce){.orb{animation:none}}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<main class="relative z-10 max-w-5xl mx-auto px-4 py-8 md:py-12">
+  <header class="flex items-center justify-between mb-10">
+    <h1 class="text-3xl md:text-4xl font-black tracking-tight">كليب فورج</h1>
+    <button id="openSettings" class="glass px-4 py-2 text-sm hover:bg-white/10 transition">⚙️ الإعدادات</button>
+  </header>
+
+  <section class="mb-10 max-w-2xl">
+    <h2 class="text-4xl md:text-6xl font-black leading-tight mb-4">فيديو طويل، خمس مقاطع تستحق النشر.</h2>
+    <p class="text-lg text-white/60">ارفع الفيديو أو الصق الرابط، وسنحدد أقوى اللحظات ونقصها بالأبعاد التي تريدها مع English captions محروقة داخل الفيديو.</p>
+  </section>
+
+  <div class="grid lg:grid-cols-5 gap-6">
+    <section class="glass p-6 lg:col-span-3 space-y-6">
+      <div>
+        <div class="tabs flex gap-2 p-1 rounded-2xl bg-black/30 mb-4">
+          <button id="tabUrl" class="on" type="button">رابط يوتيوب</button>
+          <button id="tabFile" type="button">رفع ملف</button>
+        </div>
+        <input id="url" class="field" dir="ltr" placeholder="https://www.youtube.com/watch?v=…">
+        <label id="fileBox" class="hidden field cursor-pointer text-center text-white/70">
+          <input id="file" type="file" accept="video/*" class="hidden">
+          <span id="fileName">اضغط لاختيار ملف فيديو من جهازك</span>
+        </label>
+      </div>
+
+      <div>
+        <p class="mb-2 font-medium">أبعاد الفيديو</p>
+        <div class="grid grid-cols-3 gap-2">
+          <label class="chip"><input type="radio" name="ratio" value="9:16" checked><span>9:16 عمودي</span></label>
+          <label class="chip"><input type="radio" name="ratio" value="1:1"><span>1:1 مربع</span></label>
+          <label class="chip"><input type="radio" name="ratio" value="16:9"><span>16:9 أفقي</span></label>
+        </div>
+      </div>
+
+      <div>
+        <p class="mb-2 font-medium">طريقة تغيير المقاس</p>
+        <div class="grid grid-cols-2 gap-2">
+          <label class="chip"><input type="radio" name="reframe" value="fit" checked><span>إطار كامل — بدون قص (أفضل جودة)</span></label>
+          <label class="chip"><input type="radio" name="reframe" value="fill"><span>ملء الشاشة — قص ذكي</span></label>
+        </div>
+      </div>
+
+      <div>
+        <p class="mb-2 font-medium">وضع المعالجة</p>
+        <div class="grid grid-cols-2 gap-2">
+          <label class="chip"><input type="radio" name="mode" value="api" checked><span>سحابي (Groq API) — أسرع</span></label>
+          <label id="modeLocal" class="chip"><input type="radio" name="mode" value="local"><span>محلي (Faster-Whisper)</span></label>
+        </div>
+      </div>
+
+      <label class="flex items-center gap-3 text-sm text-white/70 cursor-pointer">
+        <input id="hook" type="checkbox" checked class="w-4 h-4"> عرض عنوان Hook في أول 3 ثوانٍ
+      </label>
+
+      <label class="flex items-center gap-3 text-sm text-white/70 cursor-pointer">
+        <input id="fx" type="checkbox" checked class="w-4 h-4"> موشن جرافيك احترافي (تكبير عند اللحظات القوية، عنوان متحرك، شريط تقدّم، مؤثرات صوتية، بطاقة متابعة)
+      </label>
+
+      <div class="flex items-center gap-4">
+        <label class="text-sm text-white/70">عدد المقاطع</label>
+        <input id="count" type="number" min="1" max="10" value="5" class="field !w-24 text-center">
+      </div>
+
+      <p id="limits" class="text-xs text-white/50"></p>
+
+      <label class="flex items-start gap-3 text-sm text-white/70 cursor-pointer">
+        <input id="agree" type="checkbox" class="w-4 h-4 mt-1">
+        <span>أؤكد أنني أملك حقوق هذا الفيديو أو لدي إذن باستخدامه، وأوافق على <a href="/legal" target="_blank" class="text-cyan-300 underline">الشروط وسياسة الخصوصية</a>.</span>
+      </label>
+
+      <button id="go" class="btn w-full">ابدأ الاستخراج</button>
+    </section>
+
+    <section class="glass p-6 lg:col-span-2 flex flex-col">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-bold">سجل المعالجة</h3>
+        <span id="state" class="text-xs px-3 py-1 rounded-full bg-white/10">جاهز</span>
+      </div>
+      <div id="log" class="rounded-2xl bg-black/40 p-4 text-white/80 flex-1"><span class="text-white/40">ستظهر هنا مراحل المعالجة.</span></div>
+    </section>
+  </div>
+
+  <section id="actions" class="mt-6 hidden glass p-4 flex flex-wrap items-center gap-3">
+    <a id="zipBtn" class="btn !py-2 !px-4 !text-sm hidden" href="#">⬇️ تحميل كل المقاطع (ZIP)</a>
+    <button id="delBtn" type="button" class="glass px-4 py-2 text-sm hover:bg-white/10">🗑️ احذف ملفاتي الآن</button>
+    <span id="expiry" class="text-xs text-white/50"></span>
+  </section>
+
+<section id="results" class="mt-10 hidden">
+    <h3 class="text-2xl font-black mb-5">المقاطع الجاهزة</h3>
+    <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  </section>
+  <footer class="mt-14 text-center text-xs text-white/40">
+    <a href="/legal" class="underline">الشروط والخصوصية</a>
+  </footer>
+</main>
+
+<div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm items-center justify-center p-4">
+  <div class="glass !bg-[#14101f]/90 p-6 w-full max-w-md space-y-4">
+    <h3 class="text-xl font-black">الإعدادات</h3>
+    <div>
+      <label class="text-sm text-white/70 block mb-1">مفتاح Groq API</label>
+      <input id="groqKey" type="password" dir="ltr" class="field" placeholder="gsk_…">
+      <p id="keyNote" class="text-xs text-white/40 mt-2">اختياري. يُحفظ في متصفحك فقط، ولا يُخزَّن على الخادم، ويُرسل مع كل طلب لاستخدام حسابك في Groq.</p>
+    </div>
+    <div class="flex gap-2 pt-2">
+      <button id="saveSettings" class="btn flex-1 !py-3">حفظ</button>
+      <button id="closeSettings" class="glass flex-1 py-3 hover:bg-white/10">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let useFile = false, timer = null, cfg = {}, jobId = localStorage.getItem('job') || '';
+
+$('tabUrl').onclick = () => setTab(false);
+$('tabFile').onclick = () => setTab(true);
+function setTab(f){
+  useFile = f;
+  $('tabUrl').classList.toggle('on', !f); $('tabFile').classList.toggle('on', f);
+  $('url').classList.toggle('hidden', f); $('fileBox').classList.toggle('hidden', !f);
+}
+$('file').onchange = e => $('fileName').textContent = e.target.files[0]?.name || 'اضغط لاختيار ملف فيديو من جهازك';
+
+const modal = $('modal');
+const toggleModal = on => { modal.classList.toggle('hidden', !on); modal.classList.toggle('flex', on); };
+$('openSettings').onclick = () => { $('groqKey').value = localStorage.getItem('groqKey') || ''; toggleModal(true); };
+$('closeSettings').onclick = () => toggleModal(false);
+$('saveSettings').onclick = () => { localStorage.setItem('groqKey', $('groqKey').value.trim()); toggleModal(false); };
+
+function applyConfig(){
+  if (!cfg.allow_url){ $('tabUrl').classList.add('hidden'); setTab(true); }
+  if (!cfg.allow_local){
+    $('modeLocal').classList.add('hidden');
+    document.querySelector('[name=mode][value=api]').checked = true;
+  }
+  const parts = [];
+  if (cfg.max_upload_mb) parts.push(`حجم الملف حتى ${cfg.max_upload_mb} MB`);
+  if (cfg.max_minutes) parts.push(`مدة الفيديو حتى ${cfg.max_minutes} دقيقة`);
+  if (cfg.rate_per_hour) parts.push(`${cfg.rate_per_hour} فيديوهات في الساعة`);
+  if (cfg.ttl_hours) parts.push(`تُحذف الملفات بعد ${cfg.ttl_hours} ساعات`);
+  $('limits').textContent = parts.join(' • ');
+  if (cfg.server_key) $('keyNote').textContent = 'اختياري: الموقع يوفّر مفتاحاً افتراضياً. ضع مفتاحك الخاص إن أردت استخدام حسابك.';
+  if (cfg.max_clips) $('count').max = cfg.max_clips;
+}
+
+function fmtExpiry(ts){
+  if (!ts) return '';
+  const m = Math.max(0, Math.round((ts * 1000 - Date.now()) / 60000));
+  return m >= 60 ? `تُحذف الملفات تلقائياً بعد ${Math.floor(m/60)} س ${m%60} د — حمّلها قبل ذلك.` : `تُحذف الملفات تلقائياً بعد ${m} دقيقة — حمّلها الآن.`;
+}
+
+function render(d){
+  $('log').innerHTML = d.log.map(l => `<div>${esc(l)}</div>`).join('');
+  $('log').scrollTop = 1e6;
+  let label = {queued:'في الطابور', running:'قيد المعالجة…', done:'اكتمل', error:'فشل', gone:'انتهت'}[d.status] || '';
+  if (d.status === 'queued' && d.queue_pos) label = `في الطابور (رقمك ${d.queue_pos})`;
+  $('state').textContent = label;
+  const finished = d.status === 'done' && d.results.length;
+  $('actions').classList.toggle('hidden', !finished);
+  if (finished){
+    $('zipBtn').classList.toggle('hidden', !d.has_zip);
+    $('zipBtn').href = '/api/zip/' + encodeURIComponent(jobId);
+    $('expiry').textContent = fmtExpiry(d.expires_at);
+  }
+  if (d.results.length){
+    $('results').classList.remove('hidden');
+    $('grid').innerHTML = d.results.map(r => `
+      <article class="glass p-3">
+        <video src="${esc(r.file)}" controls playsinline preload="metadata" class="w-full rounded-2xl bg-black max-h-96 object-contain"></video>
+        <div class="flex items-center justify-between mt-3">
+          <h4 class="font-bold">${esc(r.title)}</h4>
+          <span class="text-sm px-2 py-1 rounded-lg bg-violet-500/30">${Number(r.score) || 0}/10</span>
+        </div>
+        ${r.hook ? `<p class="text-sm text-yellow-300 mt-1">🎣 ${esc(r.hook)}</p>` : ''}
+        <p class="text-sm text-white/60 mt-1">${esc(r.reason)}</p>
+        <a href="${esc(r.file)}?dl=1" class="inline-block mt-3 text-sm text-cyan-300 hover:underline">تحميل المقطع</a>
+      </article>`).join('');
+  }
+}
+
+function poll(){
+  clearInterval(timer);
+  let fails = 0;
+  const tick = async () => {
+    try {
+      const r = await fetch('/api/status/' + encodeURIComponent(jobId));
+      const d = await r.json();
+      fails = 0;
+      render(d);
+      if (r.status === 404){ localStorage.removeItem('job'); clearInterval(timer); $('go').disabled = false; return; }
+      if (d.status === 'done' || d.status === 'error'){ clearInterval(timer); $('go').disabled = false; }
+    } catch(e){
+      if (++fails >= 5){ $('state').textContent = 'انقطع الاتصال — سنعيد المحاولة…'; }
+    }
+  };
+  tick(); timer = setInterval(tick, 2000);
+}
+
+function upload(fd){
+  return new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open('POST', '/api/process');
+    x.upload.onprogress = e => { if (e.lengthComputable) render({log:[`⏫ رفع الملف… ${Math.round(e.loaded / e.total * 100)}%`], status:'running', results:[]}); };
+    x.onload = () => { let j = {}; try { j = JSON.parse(x.responseText); } catch(_){}; x.status < 300 ? resolve(j) : reject(new Error(j.error || 'حدث خطأ غير متوقع')); };
+    x.onerror = () => reject(new Error('تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.'));
+    x.send(fd);
+  });
+}
+
+$('go').onclick = async () => {
+  if (!$('agree').checked) return alert('يجب تأكيد أنك تملك حقوق الفيديو والموافقة على الشروط.');
+  const fd = new FormData();
+  if (useFile){
+    const f = $('file').files[0]; if (!f) return alert('اختر ملف فيديو أولًا');
+    if (cfg.max_upload_mb && f.size > cfg.max_upload_mb * 1048576) return alert(`الملف أكبر من ${cfg.max_upload_mb} MB`);
+    fd.append('video', f);
+  } else {
+    if (!$('url').value.trim()) return alert('الصق رابط يوتيوب أولًا');
+    fd.append('url', $('url').value.trim());
+  }
+  fd.append('ratio', document.querySelector('[name=ratio]:checked').value);
+  fd.append('mode', document.querySelector('[name=mode]:checked').value);
+  fd.append('count', $('count').value);
+  fd.append('hook', $('hook').checked ? '1' : '0');
+  fd.append('fx', $('fx').checked ? '1' : '0');
+  fd.append('reframe', document.querySelector('[name=reframe]:checked').value);
+  fd.append('groq_key', localStorage.getItem('groqKey') || '');
+  $('go').disabled = true; $('results').classList.add('hidden'); $('actions').classList.add('hidden');
+  render({log:['⏫ جاري الإرسال…'], status:'running', results:[]});
+  try {
+    const j = await upload(fd);
+    jobId = j.job; localStorage.setItem('job', jobId);
+    poll();
+  } catch(e){
+    render({log:['❌ ' + e.message], status:'error', results:[]}); $('go').disabled = false;
+  }
+};
+
+$('delBtn').onclick = async () => {
+  if (!confirm('سيتم حذف كل المقاطع من الخادم نهائياً. متابعة؟')) return;
+  await fetch('/api/job/' + encodeURIComponent(jobId), {method:'DELETE'});
+  localStorage.removeItem('job'); jobId = '';
+  $('results').classList.add('hidden'); $('actions').classList.add('hidden'); $('grid').innerHTML = '';
+  render({log:['🗑️ تم حذف ملفاتك من الخادم.'], status:'gone', results:[]});
+};
+
+(async () => {
+  try { cfg = await (await fetch('/api/config')).json(); applyConfig(); } catch(_){}
+  if (jobId){ $('go').disabled = true; poll(); }
+})();
+</script>
+</body>
+</html>

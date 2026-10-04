@@ -1,0 +1,33 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      CLIPFORGE_TRUST_PROXY: "1"
+    volumes:
+      - clipdata:/data
+      # - ./cookies.txt:/run/cookies.txt:ro     # only if YouTube asks to sign in (see DEPLOY_AR.md)
+    expose:
+      - "8000"
+    # keeps one runaway render from freezing the whole server
+    mem_limit: 3g
+
+  caddy:                       # automatic HTTPS (Let's Encrypt) + upload size limit
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  clipdata:
+  caddy_data:
+  caddy_config:

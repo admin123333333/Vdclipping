@@ -1,0 +1,8 @@
+# Lean dependency set for the public website (no local Whisper: transcription runs on Groq)
+Flask>=3.0,<4
+gunicorn>=22
+requests>=2.31
+yt-dlp[default]>=2026.3.17
+imageio-ffmpeg>=0.5.1
+numpy
+opencv-python-headless
